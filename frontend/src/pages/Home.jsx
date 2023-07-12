@@ -1,82 +1,90 @@
 import { useState } from "react";
-import openEye from "../assets/eye.svg";
-import closeEye from "../assets/eye-slash.svg";
-import {
-  separateCardNumber,
-  hideCardNumber,
-} from "../services/formatCardNumbers";
+
+import users from "../services/fakeUserData";
 import "../styles/Home.css";
+import Welcome from "../components/home/Welcome";
 
 export default function Home() {
   const [isCardInserted, setIsCardInserted] = useState(false);
-  const [isEyeOpen, setIsEyeOpen] = useState(false);
   const [inputCardNumbers, setInputCardNumbers] = useState("");
   const [cardNumbers, setCardNumbers] = useState("#### #### #### ####");
+  const [message, setMessage] = useState("Veuillez insérer votre carte");
 
-  /**
-   * The function "formatCardNumber" takes a card number value as input and formats it by separating it
-   * into groups of four digits and hiding all but the last two digits.
-   */
-  function formatCardNumber(value) {
-    let cardIdValue = "";
-    value.length === 0 && setCardNumbers("#### #### #### ####");
-    value.split("").forEach((number, i) => {
-      cardIdValue += separateCardNumber(i, 4) + hideCardNumber(i, number, 14);
-      setCardNumbers(cardIdValue);
-    });
-  }
+  function handleCardInserted() {
+    setIsCardInserted(!isCardInserted);
+    setTimeout(() => {
+      // vérifier le nombre de chiffre
+      if (inputCardNumbers.length !== 16) {
+        setIsCardInserted((old) => !old);
+        setMessage(
+          "Numéro invalide. Veuillez entrer les 16 chiffres de votre carte."
+        );
+        return;
+      }
 
-  /**
-   * The handleChange function updates the input number and formats the card number if the input value
-   * is a string of up to 16 digits.
-   */
-  function handleChange(e) {
-    const value = e.target.value;
-    if (/^\d{0,16}$/.test(value)) {
-      setInputCardNumbers(value);
-      formatCardNumber(value);
-    }
+      const user = users.filter((user) =>
+        user.cards.some((card) => card.number === parseInt(inputCardNumbers))
+      );
+
+      if (!user.length) {
+        setIsCardInserted((old) => !old);
+        setMessage("Cette carte n'est associé à aucun compte utilisateur.");
+        return;
+      }
+    }, "1000");
   }
 
   return (
     <section id="home">
-      <section className="home-text">
+      <Welcome
+        inputCardNumbers={inputCardNumbers}
+        setInputCardNumbers={setInputCardNumbers}
+        setCardNumbers={setCardNumbers}
+      />
+      {/* <section className="welcome">
         <h1>Bienvenue</h1>
         <p>
           Pour commencer à utiliser le distributeur, entrez le numero de votre
           carte et insérez la.
         </p>
-        <div className="card-number-input">
-          <input
-            type="text"
-            name="cardId"
-            id="cardID"
-            onChange={(e) => handleChange(e)}
-            placeholder="1234567812345678"
-            value={inputCardNumbers}
-            autoComplete="off"
-            style={{ WebkitTextSecurity: `${isEyeOpen ? "none" : "disc"}` }}
-          />
-          <img
-            src={isEyeOpen ? openEye : closeEye}
-            alt="icon of an eye open or close"
-            onClick={() => setIsEyeOpen(!isEyeOpen)}
-          />
+        <div>
+          <div className="card-number-input">
+            <input
+              type="text"
+              name="cardId"
+              id="cardID"
+              onChange={(e) => handleChange(e)}
+              placeholder="Numéro de la carte"
+              value={inputCardNumbers}
+              autoComplete="off"
+              style={{ WebkitTextSecurity: `${isEyeOpen ? "none" : "disc"}` }}
+            />
+            <img
+              src={isEyeOpen ? openEye : closeEye}
+              alt="icon of an eye open or close"
+              onClick={() => setIsEyeOpen(!isEyeOpen)}
+            />
+          </div>
         </div>
-      </section>
-      <section
-        className="home-card-container"
-        onClick={() => setIsCardInserted(!isCardInserted)}
-      >
-        <div className="card-hole">
-          <div className="holebar"></div>
+      </section> */}
+      <section id="card-section">
+        <div id="atm-screen">
+          <span id="error-message">{message}</span>
         </div>
-        <div className={`home-card ${isCardInserted ? "insert" : ""}`}>
-          <div className="puce"></div>
-          <p name="card-number" id="card-number">
-            {cardNumbers}
-          </p>
-        </div>
+        <section
+          className="home-card-container"
+          onClick={() => handleCardInserted()}
+        >
+          <div className="card-hole">
+            <div className="holebar"></div>
+          </div>
+          <div className={`home-card ${isCardInserted ? "insert" : ""}`}>
+            <div className="puce"></div>
+            <p name="card-number" id="card-number">
+              {cardNumbers}
+            </p>
+          </div>
+        </section>
       </section>
     </section>
   );

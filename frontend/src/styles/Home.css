@@ -20,12 +20,34 @@
   flex: 1 1 0;
 }
 
-.home-text {
+.welcome {
   flex-direction: column;
   color: #fff;
   gap: 2rem;
   font-size: 2rem;
   font-family: Roboto;
+}
+#card-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+#atm-screen {
+  height: 150px;
+  width: 60%;
+  /* background: radial-gradient(
+    circle,
+    rgb(71, 74, 79) 0%,
+    rgba(38, 40, 43, 1) 100%
+  ); */
+  background-color: #28262b;
+  padding: 1rem;
+  box-shadow: inset 3px 3px 10px #171619;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2rem;
 }
 .home-card-container {
   display: flex;
@@ -64,8 +86,6 @@
   transform-style: preserve-3d;
   transition: all 1s;
   transform: rotate(90deg) rotateY(-45deg) translateX(0px);
-
-  /* transform: rotate(90deg) translateY(50%) translateX(0%) rotateY(0deg); */
 }
 .insert {
   transition: all 1s;
@@ -104,5 +124,11 @@
   background-color: transparent;
   border: none;
   outline: none;
-  /* webkit-text-security: disc; */
+}
+
+#error-message {
+  color: #58545d;
+  text-align: center;
+  font-family: "Roboto";
+  font-size: 1.5rem;
 }
