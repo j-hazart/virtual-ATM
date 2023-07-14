@@ -7,10 +7,11 @@ import {
   hideCardNumber,
 } from "../../services/formatCardNumbers";
 
-export default function Welcome({
+export default function CardNumberInput({
   inputCardNumbers,
   setInputCardNumbers,
   setCardNumbers,
+  handleCardInserted,
 }) {
   const [isEyeOpen, setIsEyeOpen] = useState(false);
 
@@ -20,9 +21,9 @@ export default function Welcome({
    */
   function formatCardNumber(value) {
     let cardIdValue = "";
-    value.length === 0 && setCardNumbers("#### #### #### ####");
+    value.length === 0 && setCardNumbers("**** **** **** ****");
     value.split("").forEach((number, i) => {
-      cardIdValue += separateCardNumber(i, 4) + hideCardNumber(i, number, 14);
+      cardIdValue += separateCardNumber(i, 4) + hideCardNumber(i, number, 12);
       setCardNumbers(cardIdValue);
     });
   }
@@ -40,37 +41,33 @@ export default function Welcome({
   }
 
   return (
-    <section className="welcome">
-      <h1>Bienvenue</h1>
-      <p>
-        Pour commencer à utiliser le distributeur, entrez le numero de votre
-        carte et insérez la.
-      </p>
-      <div>
-        <div className="card-number-input">
-          <input
-            type="text"
-            name="cardId"
-            id="cardID"
-            onChange={(e) => handleChange(e)}
-            placeholder="Numéro de la carte"
-            value={inputCardNumbers}
-            autoComplete="off"
-            style={{ WebkitTextSecurity: `${isEyeOpen ? "none" : "disc"}` }}
-          />
-          <img
-            src={isEyeOpen ? openEye : closeEye}
-            alt="icon of an eye open or close"
-            onClick={() => setIsEyeOpen(!isEyeOpen)}
-          />
-        </div>
+    <div>
+      <div className="flex gap-2 rounded-full p-2">
+        <img
+          className="rounded-full p-2 shadow-[0_0_3px_#d7dde6] active:border-none active:shadow-neo_inset"
+          src={isEyeOpen ? openEye : closeEye}
+          alt="icon of an eye open or close"
+          onClick={() => setIsEyeOpen(!isEyeOpen)}
+        />
+        <input
+          className="w-[18ch] rounded-full bg-transparent p-2 text-center shadow-neo_inset outline-none"
+          type="text"
+          name="cardId"
+          id="cardID"
+          onChange={(e) => handleChange(e)}
+          onKeyDown={(e) => e.key === "Enter" && handleCardInserted()}
+          placeholder="Numéro de carte"
+          value={inputCardNumbers}
+          autoComplete="off"
+          style={{ WebkitTextSecurity: `${isEyeOpen ? "none" : "disc"}` }}
+        />
       </div>
-    </section>
+    </div>
   );
 }
-
-Welcome.propTypes = {
+CardNumberInput.propTypes = {
   inputCardNumbers: PropTypes.string.isRequired,
   setInputCardNumbers: PropTypes.func.isRequired,
   setCardNumbers: PropTypes.func.isRequired,
+  handleCardInserted: PropTypes.func.isRequired,
 };

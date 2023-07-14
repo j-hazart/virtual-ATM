@@ -13,5 +13,5 @@ export function separateCardNumber(index, interval) {
  * Otherwise, it returns the original number.
  */
 export function hideCardNumber(index, number, end, start = 0) {
-  return index >= start && index < end ? "#" : number;
+  return index >= start && index < end ? "*" : number;
 }

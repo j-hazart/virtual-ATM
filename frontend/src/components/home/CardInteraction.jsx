@@ -1,8 +1,14 @@
-import PropTypes from "prop-types";
 import { useState } from "react";
 import users from "../../services/fakeUserData";
+import CardNumberInput from "./CardNumberInput";
 
-export default function CardInteraction({ cardNumbers, inputCardNumbers }) {
+import "../../styles/Home.css";
+import ElectronicTerminal from "./ElectronicTerminal";
+import CreditCard from "./CreditCard";
+
+export default function CardInteraction() {
+  const [inputCardNumbers, setInputCardNumbers] = useState("");
+  const [cardNumbers, setCardNumbers] = useState("**** **** **** ****");
   const [isCardInserted, setIsCardInserted] = useState(false);
   const [message, setMessage] = useState("Veuillez insérer votre carte");
 
@@ -12,13 +18,12 @@ export default function CardInteraction({ cardNumbers, inputCardNumbers }) {
    */
   function handleCardInserted() {
     setIsCardInserted(!isCardInserted);
+
     setTimeout(() => {
       // vérifier le nombre de chiffre
       if (inputCardNumbers.length !== 16) {
         setIsCardInserted((old) => !old);
-        setMessage(
-          "Numéro invalide. Veuillez entrer les 16 chiffres de votre carte."
-        );
+        setMessage("Le numéro de la carte doit contenir 16 chiffres.");
         return;
       }
 
@@ -28,36 +33,33 @@ export default function CardInteraction({ cardNumbers, inputCardNumbers }) {
 
       if (!user.length) {
         setIsCardInserted((old) => !old);
-        setMessage("Cette carte n'est associé à aucun compte utilisateur.");
+        setMessage(
+          "Cette carte n'est associé à aucun compte. Veuillez vérifier le numero de votre carte."
+        );
         return;
       }
-    }, "1000");
+      setIsCardInserted((old) => !old);
+      setMessage("Entrez le code PIN");
+    }, "2000");
   }
 
   return (
-    <section id="card-section">
-      <div id="atm-screen">
-        <span id="error-message">{message}</span>
-      </div>
-      <section
-        className="home-card-container"
-        onClick={() => handleCardInserted()}
-      >
-        <div className="card-hole">
-          <div className="holebar"></div>
-        </div>
-        <div className={`home-card ${isCardInserted ? "insert" : ""}`}>
-          <div className="puce"></div>
-          <p name="card-number" id="card-number">
-            {cardNumbers}
-          </p>
-        </div>
+    <section className="flex flex-col items-center gap-2">
+      <CardNumberInput
+        inputCardNumbers={inputCardNumbers}
+        setInputCardNumbers={setInputCardNumbers}
+        setCardNumbers={setCardNumbers}
+        handleCardInserted={handleCardInserted}
+      />
+
+      <section className="flex h-full w-full items-center justify-center gap-8 p-4">
+        <ElectronicTerminal message={message} />
+        <CreditCard
+          isCardInserted={isCardInserted}
+          cardNumbers={cardNumbers}
+          handleCardInserted={handleCardInserted}
+        />
       </section>
     </section>
   );
 }
-
-CardInteraction.propTypes = {
-  cardNumbers: PropTypes.string.isRequired,
-  inputCardNumbers: PropTypes.string.isRequired,
-};
