@@ -12,6 +12,8 @@ export default function CardNumberInput({
   setInputCardNumbers,
   setCardNumbers,
   handleCardInserted,
+  setIsCardValidated,
+  setMessage,
 }) {
   const [isEyeOpen, setIsEyeOpen] = useState(false);
 
@@ -35,6 +37,8 @@ export default function CardNumberInput({
   function handleChange(e) {
     const value = e.target.value;
     if (/^\d{0,16}$/.test(value)) {
+      setMessage("Veuillez insérer votre carte");
+      setIsCardValidated(false);
       setInputCardNumbers(value);
       formatCardNumber(value);
     }
@@ -70,4 +74,6 @@ CardNumberInput.propTypes = {
   setInputCardNumbers: PropTypes.func.isRequired,
   setCardNumbers: PropTypes.func.isRequired,
   handleCardInserted: PropTypes.func.isRequired,
+  setIsCardValidated: PropTypes.func.isRequired,
+  setMessage: PropTypes.func.isRequired,
 };

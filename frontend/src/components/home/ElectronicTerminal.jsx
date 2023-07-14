@@ -1,10 +1,42 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import users from "../../services/fakeUserData";
+import { useNavigate } from "react-router-dom";
 /* import contactless from "../../assets/contactless.svg"; */
 
-export default function ElectronicTerminal({ message }) {
+export default function ElectronicTerminal({
+  message,
+  isCardValidated,
+  inputCardNumbers,
+}) {
   const tpe = [7, 8, 9, 4, 5, 6, 1, 2, 3, "annuler", 0, "valider"];
   const [pin, setPin] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setPin("");
+  }, [inputCardNumbers]);
+
+  function handlePin(value) {
+    if (!isCardValidated) return;
+    if (pin.length < 4) {
+      typeof value === "number" && setPin((old) => (old += value));
+    }
+    value === "annuler" && setPin("");
+
+    if (value === "valider") {
+      let user = users.filter((user) =>
+        user.cards.some((card) => card.number === parseInt(inputCardNumbers))
+      );
+      user = user[0];
+      user.cards.some(
+        (card) =>
+          card.number === parseInt(inputCardNumbers) &&
+          card.pin === parseInt(pin)
+      ) && navigate("/dashboard");
+    }
+  }
+
   return (
     <div className="z-10 flex h-max w-max translate-x-[0vw] flex-col gap-4 rounded-3xl border-2 border-b-primary border-l-white border-r-primary border-t-white bg-primary p-8 shadow-box transition-all ">
       {/* screen */}
@@ -19,18 +51,19 @@ export default function ElectronicTerminal({ message }) {
 
       {/* pad */}
       <div className="grid grid-cols-3 grid-rows-4 gap-4 p-4">
-        {tpe.map((button) => (
+        {tpe.map((value) => (
           <div
-            key={button}
+            key={value}
+            onClick={(e) => handlePin(value)}
             className={`${
-              typeof button === "string"
-                ? button === "annuler"
+              typeof value === "string"
+                ? value === "annuler"
                   ? "bg-red-700 text-primary shadow-neo_bound_red active:shadow-neo_bound_red_inset"
                   : "bg-green-700 text-primary shadow-neo_bound_green active:shadow-neo_bound_green_inset"
                 : " shadow-neo_bound active:shadow-neo_inset"
             } rounded-full p-2 text-center font-bold`}
           >
-            {button}
+            {value}
           </div>
         ))}
       </div>
@@ -40,4 +73,6 @@ export default function ElectronicTerminal({ message }) {
 
 ElectronicTerminal.propTypes = {
   message: PropTypes.string.isRequired,
+  inputCardNumbers: PropTypes.string.isRequired,
+  isCardValidated: PropTypes.bool.isRequired,
 };

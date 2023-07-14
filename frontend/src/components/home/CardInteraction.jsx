@@ -10,6 +10,7 @@ export default function CardInteraction() {
   const [inputCardNumbers, setInputCardNumbers] = useState("");
   const [cardNumbers, setCardNumbers] = useState("**** **** **** ****");
   const [isCardInserted, setIsCardInserted] = useState(false);
+  const [isCardValidated, setIsCardValidated] = useState(false);
   const [message, setMessage] = useState("Veuillez insérer votre carte");
 
   /**
@@ -18,7 +19,7 @@ export default function CardInteraction() {
    */
   function handleCardInserted() {
     setIsCardInserted(!isCardInserted);
-
+    setIsCardValidated(false);
     setTimeout(() => {
       // vérifier le nombre de chiffre
       if (inputCardNumbers.length !== 16) {
@@ -39,6 +40,7 @@ export default function CardInteraction() {
         return;
       }
       setIsCardInserted((old) => !old);
+      setIsCardValidated(true);
       setMessage("Entrez le code PIN");
     }, "2000");
   }
@@ -50,10 +52,16 @@ export default function CardInteraction() {
         setInputCardNumbers={setInputCardNumbers}
         setCardNumbers={setCardNumbers}
         handleCardInserted={handleCardInserted}
+        setIsCardValidated={setIsCardValidated}
+        setMessage={setMessage}
       />
 
       <section className="flex h-full w-full items-center justify-center gap-8 p-4">
-        <ElectronicTerminal message={message} />
+        <ElectronicTerminal
+          message={message}
+          isCardValidated={isCardValidated}
+          inputCardNumbers={inputCardNumbers}
+        />
         <CreditCard
           isCardInserted={isCardInserted}
           cardNumbers={cardNumbers}

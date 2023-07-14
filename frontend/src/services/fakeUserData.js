@@ -7,12 +7,12 @@ const users = [
       {
         number: 1234123412341234,
         pin: 1234,
-        blocked: false,
+        attempt: 4,
       },
       {
         number: 6789678967896789,
         pin: 1234,
-        blocked: false,
+        attempt: 4,
       },
     ],
   },
