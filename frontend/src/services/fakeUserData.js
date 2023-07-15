@@ -3,6 +3,7 @@ const users = [
     firstname: "John",
     lastname: "Doe",
     accountNumber: 12312312312,
+    solde: 12500,
     cards: [
       {
         number: 1234123412341234,

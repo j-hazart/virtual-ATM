@@ -13,6 +13,7 @@ export default {
       },
       boxShadow: {
         box: "18px 18px 30px #cccfd2",
+        card: "20px 20px 60px #c9cdcf,-20px -20px 60px #ffffff",
         neo: "inset 3px 3px 5px #fff,3px 3px 5px #cccfd2",
         "neo-plus": "inset 9px 9px 15px #fff,9px 9px 15px #cccfd2",
         neo_bound:
@@ -28,6 +29,8 @@ export default {
         neo_inset: "inset -3px -3px 5px #fff,inset 3px 3px 5px #cccfd2",
         neo_screen:
           "inset 10px 10px 20px #9fab96,inset -10px -10px 20px #d7e7cc",
+        in: "inset 3px 3px 8px #26282B50,inset -3px -3px 8px #ffffff35 ",
+        test: "inset 2px 2px 2px white,0 0 2px #000000,inset -2px -2px 2px #cccfd2",
       },
     },
   },
