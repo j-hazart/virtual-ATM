@@ -1,11 +1,11 @@
 import { useHandleAmout } from "../hooks/amount";
 import bank from "../assets/bank.svg";
-import InputSection from "../components/InputSection";
-import Numpad from "../components/Numpad";
+import InputSection from "../components/dashboard/InputSection";
+import Numpad from "../components/dashboard/Numpad";
 import { useNavigate } from "react-router-dom";
 
 export default function Withdraw() {
-  const { amount, addNumber, deleteNumber } = useHandleAmout();
+  const { amount, addNumber, deleteNumber, setActiveInput } = useHandleAmout();
   const navigate = useNavigate();
 
   return (
@@ -22,6 +22,7 @@ export default function Withdraw() {
           title="Dépôt"
           paragraph="Entrez le montant que vous souhaitez déposer"
           inputValue={amount}
+          setActiveInput={setActiveInput}
         />
         <Numpad deleteLast={deleteNumber} addNumber={addNumber} />
       </div>

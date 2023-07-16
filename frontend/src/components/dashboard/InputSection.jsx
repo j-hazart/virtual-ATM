@@ -1,6 +1,16 @@
 import PropTypes from "prop-types";
+import InputAmount from "./InputAmount";
+import InputAccount from "./InputAccount";
 
-export default function InputSection({ logo, title, paragraph, inputValue }) {
+export default function InputSection({
+  logo,
+  title,
+  paragraph,
+  inputValue,
+  setActiveInput,
+  accountNumbers,
+  transfer,
+}) {
   return (
     <div className="flex h-max w-max flex-1 flex-col gap-16 rounded-xl p-8">
       <div className="flex items-center justify-center gap-4">
@@ -9,17 +19,17 @@ export default function InputSection({ logo, title, paragraph, inputValue }) {
       </div>
 
       <div className="flex flex-col gap-8">
-        <p className="text-center text-lg">{paragraph}</p>
-        <div className="flex items-center justify-center gap-4">
-          <span className="text-xl font-bold">€</span>
-          <input
-            className=" rounded-xl bg-transparent p-2 px-4 text-center font-bold shadow-neo_inset active:border-none active:outline-none"
-            type="text"
-            name="withdraw"
-            id="withdraw"
-            value={inputValue}
+        {transfer && (
+          <InputAccount
+            setActiveInput={setActiveInput}
+            accountNumbers={accountNumbers}
           />
-        </div>
+        )}
+        <InputAmount
+          value={inputValue}
+          content={paragraph}
+          setActiveInput={setActiveInput}
+        />
         <input
           className="w-max self-center rounded-xl bg-gradient-to-br from-[#d5d9dc] to-[#feffff] px-8 py-2 font-bold uppercase shadow-btn active:shadow-onPress"
           type="button"
@@ -34,4 +44,7 @@ InputSection.propTypes = {
   title: PropTypes.string.isRequired,
   paragraph: PropTypes.string.isRequired,
   inputValue: PropTypes.string.isRequired,
+  setActiveInput: PropTypes.func.isRequired,
+  accountNumbers: PropTypes.string.isRequired,
+  transfer: PropTypes.bool,
 };
