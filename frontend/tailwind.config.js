@@ -26,11 +26,14 @@ export default {
           "-2px -2px 2px #cccfd2,inset 3px 3px 5px #d32020,inset -3px -3px 3px #9f1818,2px 2px 2px #c0c0c0, 9px 9px 15px #cccfd2",
         neo_bound_green:
           "-2px -2px 2px #cccfd2,inset 3px 3px 5px #189246,inset -3px -3px 3px #126e34,2px 2px 2px #c0c0c0, 9px 9px 15px #cccfd2",
-        neo_inset: "inset -3px -3px 5px #fff,inset 3px 3px 5px #cccfd2",
+        neo_inset: "inset -3px -3px 6px #fff,inset 3px 3px 6px #cccfd2",
         neo_screen:
           "inset 10px 10px 20px #9fab96,inset -10px -10px 20px #d7e7cc",
-        in: "inset 3px 3px 8px #26282B50,inset -3px -3px 8px #ffffff35 ",
-        test: "inset 2px 2px 2px white,0 0 2px #000000,inset -2px -2px 2px #cccfd2",
+        in: "inset 2px 2px 8px #26282B50,inset -2px -2px 8px #ffffff ",
+        button:
+          "inset 2px 2px 2px white,0 0 2px #000000,inset -2px -2px 2px #cccfd2",
+        btn: "10px 10px 20px #c9cdcf,-10px -10px 20px #ffffff",
+        onPress: "3px 3px 6px #c9cdcf,-3px -3px 6px #ffffff",
       },
     },
   },

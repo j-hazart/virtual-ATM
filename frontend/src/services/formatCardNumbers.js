@@ -8,7 +8,7 @@ export function separateCardNumber(index, interval) {
 }
 
 /**
- * The function hides a portion of a card number by replacing it with "#" characters.
+ * The function hides a portion of a card number by replacing it with "*" characters.
  * @returns "#" if the index is greater than or equal to the start value and less than the end value.
  * Otherwise, it returns the original number.
  */

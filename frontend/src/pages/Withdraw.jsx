@@ -1,26 +1,29 @@
+import { useHandleAmout } from "../hooks/amount";
 import cash from "../assets/money.svg";
+import InputSection from "../components/InputSection";
+import Numpad from "../components/Numpad";
+import { useNavigate } from "react-router-dom";
 
 export default function Withdraw() {
-  const pad = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+  const { amount, addNumber, deleteNumber } = useHandleAmout();
+  const navigate = useNavigate();
+
   return (
-    <section className="flex h-screen w-screen bg-primary p-8">
-      <div className="">
-        <img src={cash} alt="money logo" />
-        <h1>Retrait</h1>
-        <p>Entrez le montant que vous souhaitez retirer</p>
-        <input type="text" name="withdraw" id="withdraw" />
-        <input type="button" value="Valider" />
-        <input type="button" value="Retour" />
-      </div>
-      <div className="grid h-max w-max grid-cols-3 grid-rows-4 gap-4">
-        {pad.map((number) => (
-          <input key={number} type="button" value={number} />
-        ))}
-        <input
-          className="col-span-2 bg-slate-700"
-          type="button"
-          value="effacer"
+    <section className="flex h-screen w-screen flex-col bg-primary p-8 text-secondary">
+      <input
+        className="col-span-2 w-max rounded-full bg-gradient-to-br from-[#d5d9dc] to-[#feffff] px-8 py-2 font-bold capitalize shadow-btn active:shadow-onPress"
+        type="button"
+        value="retour"
+        onClick={() => navigate(-1)}
+      />
+      <div className="flex h-full w-full items-center justify-center max-md:flex-col">
+        <InputSection
+          logo={cash}
+          title="Retrait"
+          paragraph="Entrez le montant que vous souhaitez retirer"
+          inputValue={amount}
         />
+        <Numpad deleteLast={deleteNumber} addNumber={addNumber} />
       </div>
     </section>
   );
