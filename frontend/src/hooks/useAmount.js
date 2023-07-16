@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const useHandleAmout = () => {
+export const useAmount = () => {
   const [amount, setAmount] = useState("");
   const [accountNumbers, setAccountNumbers] = useState("");
   const [activeInput, setActiveInput] = useState("amount");

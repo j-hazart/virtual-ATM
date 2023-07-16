@@ -1,17 +1,13 @@
-import { useHandleAmout } from "../hooks/amount";
+import { useAmount } from "../hooks/useAmount";
 import bank2 from "../assets/bank2.svg";
 import InputSection from "../components/dashboard/InputSection";
 import Numpad from "../components/dashboard/Numpad";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
-export default function Withdraw() {
+export default function Transfer() {
   const { amount, accountNumbers, addNumber, deleteNumber, setActiveInput } =
-    useHandleAmout();
+    useAmount();
   const navigate = useNavigate();
-  useEffect(() => {
-    setActiveInput("account");
-  });
 
   return (
     <section className="flex h-screen w-screen flex-col bg-primary p-8 text-secondary">

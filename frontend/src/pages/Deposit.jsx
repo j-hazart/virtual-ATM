@@ -1,11 +1,11 @@
-import { useHandleAmout } from "../hooks/amount";
+import { useAmount } from "../hooks/useAmount";
 import bank from "../assets/bank.svg";
 import InputSection from "../components/dashboard/InputSection";
 import Numpad from "../components/dashboard/Numpad";
 import { useNavigate } from "react-router-dom";
 
-export default function Withdraw() {
-  const { amount, addNumber, deleteNumber, setActiveInput } = useHandleAmout();
+export default function Deposit() {
+  const { amount, addNumber, deleteNumber, setActiveInput } = useAmount();
   const navigate = useNavigate();
 
   return (
