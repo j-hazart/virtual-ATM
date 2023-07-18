@@ -9,13 +9,17 @@ import creditCard from "../assets/credit-card.svg";
 import gear from "../assets/gear.svg";
 import Card from "../components/dashboard/Card";
 import { useNavigate } from "react-router-dom";
+import users from "../services/fakeUserData";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const user = users[0];
   return (
     <section className="flex h-screen w-screen flex-col bg-primary text-secondary">
       <header className="mt-8 flex justify-between p-4">
-        <h1 className="text-5xl font-bold capitalize">Bienvenu John</h1>
+        <h1 className="text-5xl font-bold capitalize">
+          Bienvenu {user.firstname}
+        </h1>
         <div
           className="flex items-center gap-2 rounded-full border-[1px] border-tertiary px-4 active:border-none active:shadow-neo_inset"
           onClick={() => navigate("/")}
