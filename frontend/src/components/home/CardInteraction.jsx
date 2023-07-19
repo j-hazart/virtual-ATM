@@ -28,11 +28,11 @@ export default function CardInteraction() {
         return;
       }
 
-      const user = users.filter((user) =>
+      const user = users.find((user) =>
         user.cards.some((card) => card.number === parseInt(inputCardNumbers))
       );
 
-      if (!user.length) {
+      if (!user) {
         setIsCardInserted((old) => !old);
         setMessage(
           "Cette carte n'est associé à aucun compte. Veuillez vérifier le numero de votre carte."

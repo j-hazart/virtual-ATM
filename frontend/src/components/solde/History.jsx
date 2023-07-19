@@ -3,12 +3,10 @@ import users from "../../services/fakeUserData";
 
 export default function History({ history, account }) {
   function checkOperation(operation) {
-    const fromAccount = users.filter(
+    const fromAccount = users.find(
       (user) => user.accountNumber === operation.from
-    )[0];
-    const toAccount = users.filter(
-      (user) => user.accountNumber === operation.to
-    )[0];
+    );
+    const toAccount = users.find((user) => user.accountNumber === operation.to);
 
     const fromAccountName = `${fromAccount.firstname} ${fromAccount.lastname}`;
     const toAccountName = `${toAccount.firstname} ${toAccount.lastname}`;

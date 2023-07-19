@@ -25,10 +25,9 @@ export default function ElectronicTerminal({
     value === "annuler" && setPin("");
 
     if (value === "valider") {
-      let user = users.filter((user) =>
+      let user = users.find((user) =>
         user.cards.some((card) => card.number === parseInt(inputCardNumbers))
       );
-      user = user[0];
       user.cards.some(
         (card) =>
           card.number === parseInt(inputCardNumbers) &&
