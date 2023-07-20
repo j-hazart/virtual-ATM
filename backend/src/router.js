@@ -6,4 +6,8 @@ router.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+const userControllers = require("./controllers/userControllers");
+
+router.get("/users", userControllers.browse);
+
 module.exports = router;
