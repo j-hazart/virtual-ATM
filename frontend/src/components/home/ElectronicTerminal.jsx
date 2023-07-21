@@ -7,6 +7,7 @@ import axios from "axios";
 
 export default function ElectronicTerminal({
   message,
+  setMessage,
   isCardValidated,
   inputCardNumbers,
 }) {
@@ -26,17 +27,22 @@ export default function ElectronicTerminal({
     value === "annuler" && setPin("");
 
     if (value === "valider") {
-      /* axios.post(`${import.meta.env.VITE_BACKEND_URL}/checkCard`, {
-        cardNumber: inputCardNumbers,
-      }); */
-      let user = users.find((user) =>
-        user.cards.some((card) => card.number === parseInt(inputCardNumbers))
-      );
-      user.cards.some(
+      axios
+        .post(`${import.meta.env.VITE_BACKEND_URL}/login`, {
+          cardNumber: inputCardNumbers,
+          pin,
+        })
+        .then((res) => {
+          res.data.message && setMessage(res.data.message);
+          res.data.user && navigate("/dashboard");
+        })
+        .catch();
+
+      /* user.cards.some(
         (card) =>
           card.number === parseInt(inputCardNumbers) &&
           card.pin === parseInt(pin)
-      ) && navigate("/dashboard");
+      ) && navigate("/dashboard"); */
     }
   }
 
@@ -76,6 +82,7 @@ export default function ElectronicTerminal({
 
 ElectronicTerminal.propTypes = {
   message: PropTypes.string.isRequired,
+  setMessage: PropTypes.func.isRequired,
   inputCardNumbers: PropTypes.string.isRequired,
   isCardValidated: PropTypes.bool.isRequired,
 };

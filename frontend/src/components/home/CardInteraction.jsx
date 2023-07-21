@@ -68,6 +68,7 @@ export default function CardInteraction() {
       <section className="flex h-full w-full items-center justify-center gap-8 p-4">
         <ElectronicTerminal
           message={message}
+          setMessage={setMessage}
           isCardValidated={isCardValidated}
           inputCardNumbers={inputCardNumbers}
         />
