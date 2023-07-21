@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import users from "../../services/fakeUserData";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 /* import contactless from "../../assets/contactless.svg"; */
 
 export default function ElectronicTerminal({
@@ -25,6 +26,9 @@ export default function ElectronicTerminal({
     value === "annuler" && setPin("");
 
     if (value === "valider") {
+      /* axios.post(`${import.meta.env.VITE_BACKEND_URL}/checkCard`, {
+        cardNumber: inputCardNumbers,
+      }); */
       let user = users.find((user) =>
         user.cards.some((card) => card.number === parseInt(inputCardNumbers))
       );
@@ -53,7 +57,7 @@ export default function ElectronicTerminal({
         {tpe.map((value) => (
           <div
             key={value}
-            onClick={(e) => handlePin(value)}
+            onClick={() => handlePin(value)}
             className={`${
               typeof value === "string"
                 ? value === "annuler"

@@ -1,6 +1,6 @@
-import { useState } from "react";
-import users from "../../services/fakeUserData";
+import { useEffect, useState } from "react";
 import CardNumberInput from "./CardNumberInput";
+import axios from "axios";
 
 import "../../styles/Home.css";
 import ElectronicTerminal from "./ElectronicTerminal";
@@ -12,6 +12,28 @@ export default function CardInteraction() {
   const [isCardInserted, setIsCardInserted] = useState(false);
   const [isCardValidated, setIsCardValidated] = useState(false);
   const [message, setMessage] = useState("Veuillez insérer votre carte");
+
+  function handleCardVerification(number) {
+    axios
+      .post(`${import.meta.env.VITE_BACKEND_URL}/cards/verify`, {
+        cardNumber: number,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setIsCardInserted((old) => !old);
+          setIsCardValidated(true);
+          setMessage("Entrez le code PIN");
+        }
+      })
+      .catch(() => {
+        setIsCardInserted((old) => !old);
+        setMessage(
+          "Cette carte n'est associé à aucun compte. Veuillez vérifier le numero de votre carte."
+        );
+      });
+  }
+
+  useEffect(() => {});
 
   /**
    * The function `handleCardInserted` checks if a valid card number has been entered and if it is
@@ -28,20 +50,7 @@ export default function CardInteraction() {
         return;
       }
 
-      const user = users.find((user) =>
-        user.cards.some((card) => card.number === parseInt(inputCardNumbers))
-      );
-
-      if (!user) {
-        setIsCardInserted((old) => !old);
-        setMessage(
-          "Cette carte n'est associé à aucun compte. Veuillez vérifier le numero de votre carte."
-        );
-        return;
-      }
-      setIsCardInserted((old) => !old);
-      setIsCardValidated(true);
-      setMessage("Entrez le code PIN");
+      handleCardVerification(inputCardNumbers);
     }, "2000");
   }
 
