@@ -11,7 +11,6 @@ async function browse(req, res) {
     });
 
     users.forEach((user) => {
-      delete user.card.cardNumber;
       delete user.card.pin;
     });
     res.status(200).json({ users });
@@ -22,21 +21,15 @@ async function browse(req, res) {
 }
 
 async function read(req, res) {
-  const { account } = req.params;
+  const account = req.params.account || req.body.card.userAccountNumber;
   try {
     const user = await prisma.user.findUnique({
       where: {
         accountNumber: account,
       },
-      include: {
-        card: true,
-      },
     });
 
-    delete user.card.cardNumber;
-    delete user.card.pin;
-
-    res.status(200).json({ user });
+    user ? res.status(200).json({ user }) : res.sendStatus(404);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

@@ -7,9 +7,18 @@ router.get("/", (req, res) => {
 });
 
 const userControllers = require("./controllers/userControllers");
+const cardControllers = require("./controllers/cardControllers");
 
 router.get("/users", userControllers.browse);
 router.get("/users/:account", userControllers.read);
 router.get("/users/:account/operations", userControllers.getUserOperations);
+
+router.post("/cards/verify", cardControllers.checkCardNumber);
+router.post(
+  "/login",
+  cardControllers.checkCardAttempts,
+  cardControllers.checkCardPin,
+  userControllers.read
+);
 
 module.exports = router;
