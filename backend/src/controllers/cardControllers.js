@@ -37,7 +37,7 @@ async function checkCardAttempts(req, res, next) {
   }
 }
 
-async function checkCardPin(req, res, next) {
+/* async function checkCardPin(req, res, next) {
   const { cardNumber, pin, card } = req.body;
   const isPinValidated = card.pin === pin;
   try {
@@ -62,10 +62,10 @@ async function checkCardPin(req, res, next) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+} */
 
 module.exports = {
   checkCardNumber,
-  checkCardPin,
+  /* checkCardPin, */
   checkCardAttempts,
 };
