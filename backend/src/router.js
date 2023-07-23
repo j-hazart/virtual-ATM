@@ -8,6 +8,7 @@ router.get("/", (req, res) => {
 
 const userControllers = require("./controllers/userControllers");
 const cardControllers = require("./controllers/cardControllers");
+const { verifyPin } = require("./services/auth");
 
 router.get("/users", userControllers.browse);
 router.get("/users/:account", userControllers.read);
@@ -17,7 +18,7 @@ router.post("/cards/verify", cardControllers.checkCardNumber);
 router.post(
   "/login",
   cardControllers.checkCardAttempts,
-  cardControllers.checkCardPin,
+  verifyPin,
   userControllers.read
 );
 

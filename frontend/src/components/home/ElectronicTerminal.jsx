@@ -34,9 +34,9 @@ export default function ElectronicTerminal({
         })
         .then((res) => {
           res.data.message && setMessage(res.data.message);
+
           res.data.user && navigate("/dashboard");
-        })
-        .catch();
+        });
 
       /* user.cards.some(
         (card) =>

@@ -7,7 +7,10 @@
     "setup": "npm i && npm --prefix ./frontend i && npm --prefix ./backend i",
     "dev": "concurrently -n front,back -c green,yellow -t \"HH:mm:ss\" -p \"{name} {time}\" \"npm --prefix ./frontend run dev\" \"npm --prefix ./backend run dev\"",
     "dev-front": "npm --prefix ./frontend run dev",
-    "dev-back": "npm --prefix ./backend run dev"
+    "dev-back": "npm --prefix ./backend run dev",
+    "migrate": "npm --prefix ./backend run migrate",
+    "seed": "npm --prefix ./backend run seed",
+    "studio": "npm --prefix ./backend run studio"
   },
   "keywords": [],
   "author": "",

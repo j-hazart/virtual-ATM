@@ -33,7 +33,7 @@ model BankOperation {
 
 model Card {
   cardNumber        String @id @unique
-  pin               String @default("1234") @db.VarChar(4)
+  hashedPin         String @default("$argon2id$v=19$m=16,t=2,p=1$YXJnb24yaWQ$esuJQi7RKxkyQihKKRdbAw")
   attempt           Int    @default(4)
   user              User   @relation(fields: [userAccountNumber], references: [accountNumber])
   userAccountNumber String @unique
