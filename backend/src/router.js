@@ -25,7 +25,7 @@ router.post(
 
 router.put(
   "/users/:account/solde",
-  userControllers.deposit,
+  userControllers.editSolde,
   bankOperationControllers.create
 );
 

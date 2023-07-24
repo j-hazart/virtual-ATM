@@ -93,7 +93,7 @@ async function getUserOperations(req, res) {
   }
 }
 
-async function deposit(req, res, next) {
+async function editSolde(req, res, next) {
   const { amount, type, userTo } = req.body;
   const { account } = req.params;
   console.log(type);
@@ -182,5 +182,5 @@ module.exports = {
   read,
   getUserOperations,
   getUserAndPassToNext,
-  deposit,
+  editSolde,
 };
