@@ -72,7 +72,17 @@ async function getUserOperations(req, res) {
     user.operations = [
       ...user.bankOperationsFrom,
       ...user.bankOperationsTo,
-    ].sort((a, b) => a.id - b.id);
+    ].sort((a, b) => {
+      if (a.date < b.date) {
+        return 1;
+      }
+      if (a.date > b.date) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    });
+
     delete user.bankOperationsFrom;
     delete user.bankOperationsTo;
 
@@ -84,11 +94,11 @@ async function getUserOperations(req, res) {
 }
 
 async function deposit(req, res, next) {
-  const { amount, type } = req.body;
+  const { amount, type, userTo } = req.body;
   const { account } = req.params;
   console.log(type);
   try {
-    const user = await prisma.user.findUnique({
+    const userMakeOperation = await prisma.user.findUnique({
       where: {
         accountNumber: account,
       },
@@ -96,9 +106,9 @@ async function deposit(req, res, next) {
     let newSolde = 0;
     if (type !== "virement") {
       if (type === "depot") {
-        newSolde = parseFloat(user.solde) + parseFloat(amount);
+        newSolde = parseFloat(userMakeOperation.solde) + parseFloat(amount);
       } else {
-        newSolde = parseFloat(user.solde) - parseFloat(amount);
+        newSolde = parseFloat(userMakeOperation.solde) - parseFloat(amount);
       }
 
       if (newSolde < 0) {
@@ -110,6 +120,33 @@ async function deposit(req, res, next) {
           },
           data: {
             solde: newSolde,
+          },
+        });
+        next();
+      }
+    } else {
+      const userRecieveAmount = await prisma.user.findUnique({
+        where: {
+          accountNumber: userTo,
+        },
+      });
+      if (parseFloat(userMakeOperation.solde) - parseFloat(amount) < 0) {
+        res.sendStatus(401);
+      } else {
+        await prisma.user.update({
+          where: {
+            accountNumber: account,
+          },
+          data: {
+            solde: parseFloat(userMakeOperation.solde) - parseFloat(amount),
+          },
+        });
+        await prisma.user.update({
+          where: {
+            accountNumber: userTo,
+          },
+          data: {
+            solde: parseFloat(userRecieveAmount.solde) + parseFloat(amount),
           },
         });
         next();

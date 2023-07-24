@@ -26,7 +26,7 @@ export default function Solde() {
 
   useEffect(() => {
     getUserData();
-  });
+  }, []);
 
   return (
     <>
