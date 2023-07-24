@@ -9,16 +9,17 @@ import creditCard from "../assets/credit-card.svg";
 import gear from "../assets/gear.svg";
 import Card from "../components/dashboard/Card";
 import { useNavigate } from "react-router-dom";
-import users from "../services/fakeUserData";
+import { useAuthUser } from "react-auth-kit";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const user = users[0];
+  const auth = useAuthUser();
+  const { firstname, lastname } = auth().user;
   return (
     <section className="flex h-screen w-screen flex-col bg-primary text-secondary">
       <header className="mt-8 flex justify-between p-4">
         <h1 className="text-5xl font-bold capitalize">
-          Bienvenu {user.firstname}
+          Bienvenu {firstname} {lastname}
         </h1>
         <div
           className="flex items-center gap-2 rounded-full border-[1px] border-tertiary px-4 active:border-none active:shadow-neo_inset"
