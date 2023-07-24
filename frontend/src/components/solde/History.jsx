@@ -40,6 +40,9 @@ export default function History({ history, account }) {
           <h2 className="text-2xl font-bold capitalize">historique :</h2>
           <ul>
             {history.slice(0, 10).map((operation) => {
+              const formattedDate = new Date(operation.date).toLocaleDateString(
+                "fr-FR"
+              );
               return (
                 <li key={operation.id} className="mb-4 border-b-2 capitalize">
                   <ul className="flex items-center gap-4">
@@ -49,7 +52,7 @@ export default function History({ history, account }) {
                         : ""
                     }`}</li>
                     <li className="flex-1 text-center text-tertiary">
-                      {operation.date}
+                      {formattedDate}
                     </li>
                     <li className="flex-1 text-right">{`${
                       operation.type === "virement"
