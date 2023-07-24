@@ -4,14 +4,10 @@ const prisma = new PrismaClient();
 
 async function browse(req, res) {
   try {
-    const users = await prisma.user.findMany({
-      include: {
-        card: true,
-      },
-    });
+    const users = await prisma.user.findMany({});
 
     users.forEach((user) => {
-      delete user.card.pin;
+      delete user.solde;
     });
     res.status(200).json({ users });
   } catch (err) {
