@@ -21,7 +21,7 @@ async function browse(req, res) {
 }
 
 async function read(req, res) {
-  const account = req.params.account || req.body.card.userAccountNumber;
+  const { account } = req.params;
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -30,6 +30,26 @@ async function read(req, res) {
     });
 
     user ? res.status(200).json({ user }) : res.sendStatus(404);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+async function getUserAndPassToNext(req, res, next) {
+  const account = req.body.card.userAccountNumber;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        accountNumber: account,
+      },
+    });
+
+    if (user) {
+      req.body.user = user;
+      next();
+    } else {
+      res.sendStatus(404);
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
@@ -77,4 +97,5 @@ module.exports = {
   browse,
   read,
   getUserOperations,
+  getUserAndPassToNext,
 };
