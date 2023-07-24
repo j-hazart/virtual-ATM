@@ -38,8 +38,27 @@ async function getCardWithPinandPassToNext(req, res, next) {
   }
 }
 
+async function editPin(req, res) {
+  const { hashedPin } = req.body;
+  const { account } = req.params;
+  try {
+    await prisma.card.update({
+      where: {
+        userAccountNumber: account,
+      },
+      data: {
+        hashedPin,
+      },
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   checkCardNumber,
-  /* checkCardPin, */
   getCardWithPinandPassToNext,
+  editPin,
 };

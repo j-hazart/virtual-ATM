@@ -67,8 +67,44 @@ async function verifyPin(req, res) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
+async function verifyPinToEdit(req, res, next) {
+  const { pin, newPin } = req.body;
+  const { account } = req.params;
+  try {
+    const card = await prisma.card.findUnique({
+      where: {
+        userAccountNumber: account,
+      },
+    });
+    const match = await argon2.verify(card.hashedPin, pin);
+    const updateCard = await prisma.card.update({
+      where: {
+        cardNumber: card.cardNumber,
+      },
+      data: {
+        attempt: match ? 4 : card.attempt - 1,
+      },
+    });
+    if (match) {
+      req.body.pin = newPin;
+      delete req.body.newPin;
+      next();
+    } else {
+      res.status(401).json({
+        message:
+          updateCard.attempt !== 0
+            ? `Code PIN incorrect ${updateCard.attempt} tentatives restantes`
+            : "Carte bloqué",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 module.exports = {
   hashPin,
   verifyPin,
+  verifyPinToEdit,
 };

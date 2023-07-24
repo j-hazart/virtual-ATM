@@ -2,6 +2,9 @@ import PropTypes from "prop-types";
 import InputPad from "../InputPad";
 import pass from "../../assets/password.svg";
 import card from "../../assets/credit-card.svg";
+import axios from "axios";
+import { useAuthUser } from "react-auth-kit";
+import { useState } from "react";
 
 export default function ChangePinSection({
   oldPin,
@@ -9,6 +12,43 @@ export default function ChangePinSection({
   newPinChecked,
   onFocus,
 }) {
+  const auth = useAuthUser();
+  const [error, setError] = useState("");
+  function verifyErrors() {
+    if (!oldPin) {
+      setError("Vous devez renseigner votre ancien PIN !");
+      return false;
+    }
+    if (!newPin) {
+      setError("Vous devez choisir un nouveau PIN !");
+      return false;
+    }
+    if (!newPinChecked) {
+      setError("Vous devez confirmer le nouveau PIN !");
+      return false;
+    }
+    if (newPin !== newPinChecked) {
+      setError("Les nouveaux PIN ne correspondent pas !");
+      return false;
+    }
+    return true;
+  }
+  function handlePinEdit() {
+    verifyErrors() &&
+      axios
+        .put(
+          `${import.meta.env.VITE_BACKEND_URL}/users/${
+            auth().user.accountNumber
+          }/card`,
+          {
+            pin: oldPin,
+            newPin,
+          }
+        )
+        .catch((err) => {
+          setError(err.response.data.message);
+        });
+  }
   return (
     <div className="flex h-max w-max flex-1 flex-col gap-16 rounded-xl p-8">
       <div className="flex items-center justify-center gap-4">
@@ -37,10 +77,12 @@ export default function ChangePinSection({
           img={pass}
           value={newPinChecked}
           onFocus={onFocus}
+          error={error}
         />
         <input
           className="w-max self-center rounded-xl bg-gradient-to-br from-[#d5d9dc] to-[#feffff] px-8 py-2 font-bold uppercase shadow-btn active:shadow-onPress"
           type="button"
+          onClick={() => handlePinEdit()}
           value="Valider"
         />
       </div>

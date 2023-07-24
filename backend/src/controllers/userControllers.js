@@ -157,25 +157,6 @@ async function editSolde(req, res, next) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
-/* async function edit(req, res) {
-  const { depositAmount } = req.body;
-  const { account } = req.params;
-  try {
-    const updateUser = await prisma.user.update({
-      where: {
-        accountNumber: account,
-      },
-      data: {
-        solde: solde + parseInt(depositAmount),
-      },
-    });
-    console.log(updateUser.solde);
-    updateUser ? res.sendStatus(200) : res.sendStatus(404);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-} */
 
 module.exports = {
   browse,

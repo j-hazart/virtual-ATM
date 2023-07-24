@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
 const userControllers = require("./controllers/userControllers");
 const cardControllers = require("./controllers/cardControllers");
 const bankOperationControllers = require("./controllers/bankOperationControllers");
-const { verifyPin } = require("./services/auth");
+const { verifyPin, verifyPinToEdit, hashPin } = require("./services/auth");
 
 router.get("/users", userControllers.browse);
 router.get("/users/:account", userControllers.read);
@@ -27,6 +27,12 @@ router.put(
   "/users/:account/solde",
   userControllers.editSolde,
   bankOperationControllers.create
+);
+router.put(
+  "/users/:account/card",
+  verifyPinToEdit,
+  hashPin,
+  cardControllers.editPin
 );
 
 module.exports = router;
