@@ -1,4 +1,5 @@
 const argon2 = require("argon2");
+const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -24,27 +25,43 @@ function hashPin(req, res, next) {
     });
 }
 
-async function verifyPin(req, res, next) {
-  const { cardNumber, pin, card } = req.body;
+async function verifyPin(req, res) {
+  const { pin, card, user } = req.body;
   try {
-    const match = await argon2.verify(card.hashedPin, pin);
-    const updateCard = await prisma.card.update({
-      where: {
-        cardNumber,
-      },
-      data: {
-        attempt: match ? 4 : card.attempt - 1,
-      },
-    });
+    if (card.attempt === 0) {
+      res.status(401).json({ message: "Carte bloqué" });
+    } else {
+      const match = await argon2.verify(card.hashedPin, pin);
+      const updateCard = await prisma.card.update({
+        where: {
+          cardNumber: card.cardNumber,
+        },
+        data: {
+          attempt: match ? 4 : card.attempt - 1,
+        },
+      });
 
-    match
-      ? next()
-      : res.json({
+      if (match) {
+        const expiresIn = 60;
+        const payload = {
+          account: user.accountNumber,
+        };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn,
+        });
+
+        delete req.body.user.solde;
+        delete req.card;
+        res.send({ token, expiresIn, user });
+      } else {
+        res.status(401).json({
           message:
             updateCard.attempt !== 0
               ? `Code PIN incorrect ${updateCard.attempt} tentatives restantes`
               : "Carte bloqué",
         });
+      }
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

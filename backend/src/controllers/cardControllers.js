@@ -17,7 +17,7 @@ async function checkCardNumber(req, res) {
   }
 }
 
-async function checkCardAttempts(req, res, next) {
+async function getCardWithPinandPassToNext(req, res, next) {
   const { cardNumber } = req.body;
   try {
     const card = await prisma.card.findUnique({
@@ -26,11 +26,12 @@ async function checkCardAttempts(req, res, next) {
       },
     });
 
-    !card
-      ? res.sendStatus(404)
-      : card.attempt === 0
-      ? res.json({ message: "Carte bloqué" })
-      : ((req.body.card = card), next());
+    if (card) {
+      req.body.card = card;
+      next();
+    } else {
+      res.sendStatus(404);
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
@@ -67,5 +68,5 @@ async function checkCardAttempts(req, res, next) {
 module.exports = {
   checkCardNumber,
   /* checkCardPin, */
-  checkCardAttempts,
+  getCardWithPinandPassToNext,
 };

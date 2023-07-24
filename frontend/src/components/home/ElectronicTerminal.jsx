@@ -1,9 +1,8 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import users from "../../services/fakeUserData";
+import { useSignIn } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-/* import contactless from "../../assets/contactless.svg"; */
 
 export default function ElectronicTerminal({
   message,
@@ -14,6 +13,7 @@ export default function ElectronicTerminal({
   const tpe = [7, 8, 9, 4, 5, 6, 1, 2, 3, "annuler", 0, "valider"];
   const [pin, setPin] = useState("");
   const navigate = useNavigate();
+  const signIn = useSignIn();
 
   useEffect(() => {
     setPin("");
@@ -33,16 +33,26 @@ export default function ElectronicTerminal({
           pin,
         })
         .then((res) => {
-          res.data.message && setMessage(res.data.message);
-
-          res.data.user && navigate("/dashboard");
+          if (res.status === 200) {
+            const { token, expiresIn, user } = res.data;
+            if (
+              signIn({
+                token,
+                expiresIn,
+                tokenType: "Bearer",
+                authState: {
+                  user,
+                },
+              })
+            ) {
+              navigate("/dashboard");
+            }
+          }
+        })
+        .catch((err) => {
+          const { message } = err.response.data;
+          setMessage(message);
         });
-
-      /* user.cards.some(
-        (card) =>
-          card.number === parseInt(inputCardNumbers) &&
-          card.pin === parseInt(pin)
-      ) && navigate("/dashboard"); */
     }
   }
 

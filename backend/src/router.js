@@ -17,9 +17,9 @@ router.get("/users/:account/operations", userControllers.getUserOperations);
 router.post("/cards/verify", cardControllers.checkCardNumber);
 router.post(
   "/login",
-  cardControllers.checkCardAttempts,
-  verifyPin,
-  userControllers.read
+  cardControllers.getCardWithPinandPassToNext,
+  userControllers.getUserAndPassToNext,
+  verifyPin
 );
 
 module.exports = router;
