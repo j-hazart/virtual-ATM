@@ -69,7 +69,6 @@ async function getUserOperations(req, res) {
         accountNumber: account,
       },
       include: {
-        card: true,
         bankOperationsFrom: true,
         bankOperationsTo: {
           where: {
