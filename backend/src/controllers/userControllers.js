@@ -55,11 +55,6 @@ async function getUserAndPassToNext(req, res, next) {
 async function getUserOperations(req, res) {
   const { account } = req.params;
   try {
-    /* const operations = await prisma.bankOperation.findMany({
-      where: {
-        OR: [{ userFrom: account }, { userTo: account }],
-      },
-    }); */
     const user = await prisma.user.findUnique({
       where: {
         accountNumber: account,
@@ -88,9 +83,55 @@ async function getUserOperations(req, res) {
   }
 }
 
+async function deposit(req, res, next) {
+  const { amount } = req.body;
+  const { account } = req.params;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        accountNumber: account,
+      },
+    });
+
+    await prisma.user.update({
+      where: {
+        accountNumber: account,
+      },
+      data: {
+        solde: parseInt(user.solde) + parseInt(amount),
+      },
+    });
+
+    next();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+/* async function edit(req, res) {
+  const { depositAmount } = req.body;
+  const { account } = req.params;
+  try {
+    const updateUser = await prisma.user.update({
+      where: {
+        accountNumber: account,
+      },
+      data: {
+        solde: solde + parseInt(depositAmount),
+      },
+    });
+    console.log(updateUser.solde);
+    updateUser ? res.sendStatus(200) : res.sendStatus(404);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+} */
+
 module.exports = {
   browse,
   read,
   getUserOperations,
   getUserAndPassToNext,
+  deposit,
 };

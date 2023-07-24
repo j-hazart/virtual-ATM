@@ -8,6 +8,7 @@ router.get("/", (req, res) => {
 
 const userControllers = require("./controllers/userControllers");
 const cardControllers = require("./controllers/cardControllers");
+const bankOperationControllers = require("./controllers/bankOperationControllers");
 const { verifyPin } = require("./services/auth");
 
 router.get("/users", userControllers.browse);
@@ -20,6 +21,12 @@ router.post(
   cardControllers.getCardWithPinandPassToNext,
   userControllers.getUserAndPassToNext,
   verifyPin
+);
+
+router.put(
+  "/users/:account/solde",
+  userControllers.deposit,
+  bankOperationControllers.create
 );
 
 module.exports = router;

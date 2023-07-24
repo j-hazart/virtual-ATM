@@ -38,33 +38,6 @@ async function getCardWithPinandPassToNext(req, res, next) {
   }
 }
 
-/* async function checkCardPin(req, res, next) {
-  const { cardNumber, pin, card } = req.body;
-  const isPinValidated = card.pin === pin;
-  try {
-    const updateCard = await prisma.card.update({
-      where: {
-        cardNumber,
-      },
-      data: {
-        attempt: isPinValidated ? 4 : card.attempt - 1,
-      },
-    });
-
-    isPinValidated
-      ? next()
-      : res.json({
-          message:
-            updateCard.attempt !== 0
-              ? `Code PIN incorrect ${updateCard.attempt} tentatives restantes`
-              : "Carte bloqué",
-        });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-} */
-
 module.exports = {
   checkCardNumber,
   /* checkCardPin, */
