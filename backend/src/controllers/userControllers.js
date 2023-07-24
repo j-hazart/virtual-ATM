@@ -84,25 +84,37 @@ async function getUserOperations(req, res) {
 }
 
 async function deposit(req, res, next) {
-  const { amount } = req.body;
+  const { amount, type } = req.body;
   const { account } = req.params;
+  console.log(type);
   try {
     const user = await prisma.user.findUnique({
       where: {
         accountNumber: account,
       },
     });
+    let newSolde = 0;
+    if (type !== "virement") {
+      if (type === "depot") {
+        newSolde = parseFloat(user.solde) + parseFloat(amount);
+      } else {
+        newSolde = parseFloat(user.solde) - parseFloat(amount);
+      }
 
-    await prisma.user.update({
-      where: {
-        accountNumber: account,
-      },
-      data: {
-        solde: parseInt(user.solde) + parseInt(amount),
-      },
-    });
-
-    next();
+      if (newSolde < 0) {
+        res.sendStatus(401);
+      } else {
+        await prisma.user.update({
+          where: {
+            accountNumber: account,
+          },
+          data: {
+            solde: newSolde,
+          },
+        });
+        next();
+      }
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

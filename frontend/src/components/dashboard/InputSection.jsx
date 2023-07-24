@@ -7,6 +7,7 @@ import { useAuthUser } from "react-auth-kit";
 export default function InputSection({
   logo,
   title,
+  type,
   paragraph,
   inputValue,
   setActiveInput,
@@ -14,16 +15,16 @@ export default function InputSection({
   transfer,
 }) {
   const auth = useAuthUser();
-  function handleDeposit() {
+  function Deposit() {
     axios
       .put(
         `${import.meta.env.VITE_BACKEND_URL}/users/${
           auth().user.accountNumber
         }/solde`,
         {
-          type: "depot",
+          type,
           userFrom: auth().user.accountNumber,
-          userTo: auth().user.accountNumber,
+          userTo: accountNumbers ? accountNumbers : auth().user.accountNumber,
           amount: inputValue,
         }
       )
@@ -51,7 +52,7 @@ export default function InputSection({
         <input
           className="w-max self-center rounded-xl bg-gradient-to-br from-[#d5d9dc] to-[#feffff] px-8 py-2 font-bold uppercase shadow-btn active:shadow-onPress"
           type="button"
-          onClick={() => handleDeposit()}
+          onClick={() => Deposit()}
           value="Valider"
         />
       </div>
@@ -61,6 +62,7 @@ export default function InputSection({
 InputSection.propTypes = {
   logo: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   paragraph: PropTypes.string.isRequired,
   inputValue: PropTypes.string.isRequired,
   setActiveInput: PropTypes.func.isRequired,
