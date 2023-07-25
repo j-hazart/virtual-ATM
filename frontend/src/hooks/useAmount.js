@@ -10,7 +10,7 @@ export const useAmount = () => {
     if (
       activeInput === "account" &&
       /^\d{0,16}$/.test(number) &&
-      accountNumbers.length < 16
+      accountNumbers.length < 11
     ) {
       setAccountNumbers((old) => (old += number));
     }

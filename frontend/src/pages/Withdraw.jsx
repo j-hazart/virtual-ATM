@@ -20,6 +20,7 @@ export default function Withdraw() {
         <InputSection
           logo={cash}
           title="Retrait"
+          type="retrait"
           paragraph="Entrez le montant que vous souhaitez retirer"
           inputValue={amount}
           setActiveInput={setActiveInput}

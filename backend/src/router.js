@@ -8,7 +8,8 @@ router.get("/", (req, res) => {
 
 const userControllers = require("./controllers/userControllers");
 const cardControllers = require("./controllers/cardControllers");
-const { verifyPin } = require("./services/auth");
+const bankOperationControllers = require("./controllers/bankOperationControllers");
+const { verifyPin, verifyPinToEdit, hashPin } = require("./services/auth");
 
 router.get("/users", userControllers.browse);
 router.get("/users/:account", userControllers.read);
@@ -21,5 +22,19 @@ router.post(
   userControllers.getUserAndPassToNext,
   verifyPin
 );
+
+router.put(
+  "/users/:account/solde",
+  userControllers.editSolde,
+  bankOperationControllers.create
+);
+router.put(
+  "/users/:account/card",
+  verifyPinToEdit,
+  hashPin,
+  cardControllers.editPin
+);
+
+router.delete("/users/:account", userControllers.destroy);
 
 module.exports = router;

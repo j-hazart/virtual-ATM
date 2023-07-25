@@ -1,49 +1,80 @@
 import PropTypes from "prop-types";
-import users from "../../services/fakeUserData";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function History({ history, account }) {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  function getUsers() {
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/users`).then((res) => {
+      setUsers(res.data.users);
+      setIsLoading(false);
+    });
+  }
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
   function checkOperation(operation) {
     const fromAccount = users.find(
-      (user) => user.accountNumber === operation.from
+      (user) => user.accountNumber === operation.userFrom
     );
-    const toAccount = users.find((user) => user.accountNumber === operation.to);
 
-    const fromAccountName = `${fromAccount.firstname} ${fromAccount.lastname}`;
-    const toAccountName = `${toAccount.firstname} ${toAccount.lastname}`;
+    const toAccount = users.find(
+      (user) => user.accountNumber === operation.userTo
+    );
 
-    return operation.from === account
-      ? `vers ${toAccountName}`
-      : `de ${fromAccountName}`;
+    const fromAccountName = `${
+      fromAccount ? fromAccount.firstname : "compte"
+    } ${fromAccount ? fromAccount.lastname : `n°${operation.userFrom}`}`;
+    const toAccountName = `${toAccount ? toAccount.firstname : "compte"} ${
+      toAccount ? toAccount.lastname : `n°${operation.userFrom}`
+    }`;
+
+    return operation.userFrom === account
+      ? ` emit ${toAccount ? "vers" : "vers le"} ${toAccountName}`
+      : `reçu ${fromAccount ? "de" : "du"} ${fromAccountName}`;
   }
   return (
-    <div className="flex w-full max-w-md flex-col gap-4">
-      <h2 className="text-2xl font-bold capitalize">historique :</h2>
-      <ul>
-        {history.slice(0, 10).map((operation) => {
-          return (
-            <li key={operation.id} className="mb-4 border-b-2 capitalize">
-              <ul className="flex items-center gap-4">
-                <li className="flex-1 font-semibold">{`${operation.type} ${
-                  operation.from ? checkOperation(operation) : ""
-                }`}</li>
-                <li className="flex-1 text-center text-tertiary">
-                  {operation.date}
+    <>
+      {!isLoading && (
+        <div className="flex w-full max-w-md flex-col gap-4">
+          <h2 className="text-2xl font-bold capitalize">historique :</h2>
+          <ul>
+            {history.slice(0, 10).map((operation) => {
+              const formattedDate = new Date(operation.date).toLocaleDateString(
+                "fr-FR"
+              );
+              return (
+                <li key={operation.id} className="mb-4 border-b-2 capitalize">
+                  <ul className="flex items-center gap-4">
+                    <li className="flex-1 font-semibold">{`${operation.type} ${
+                      operation.type === "virement"
+                        ? checkOperation(operation)
+                        : ""
+                    }`}</li>
+                    <li className="flex-1 text-center text-tertiary">
+                      {formattedDate}
+                    </li>
+                    <li className="flex-1 text-right">{`${
+                      operation.type === "virement"
+                        ? operation.userFrom === account
+                          ? "-"
+                          : "+"
+                        : operation.type === "depot"
+                        ? "+"
+                        : "-"
+                    } ${operation.amount}€`}</li>
+                  </ul>
                 </li>
-                <li className="flex-1 text-right">{`${
-                  operation.from
-                    ? operation.from === account
-                      ? "-"
-                      : "+"
-                    : operation.type === "depot"
-                    ? "+"
-                    : "-"
-                } ${operation.amount}€`}</li>
-              </ul>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -52,24 +83,11 @@ History.propTypes = {
     PropTypes.shape({
       id: PropTypes.number,
       type: PropTypes.string,
-      from: PropTypes.number,
-      to: PropTypes.number,
+      from: PropTypes.string,
+      to: PropTypes.string,
       date: PropTypes.string,
-      amount: PropTypes.number,
+      amount: PropTypes.string,
     })
   ).isRequired,
-  account: PropTypes.number.isRequired,
-};
-
-History.defaultProp = {
-  history: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      type: PropTypes.string,
-      from: null,
-      to: null,
-      date: PropTypes.string,
-      amount: PropTypes.number,
-    })
-  ),
+  account: PropTypes.string.isRequired,
 };

@@ -21,6 +21,7 @@ export default function Transfer() {
         <InputSection
           logo={bank2}
           title="Virement"
+          type="virement"
           paragraph="Entrez le montant que vous souhaitez transférer"
           inputValue={amount}
           setActiveInput={setActiveInput}

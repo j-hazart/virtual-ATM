@@ -4,14 +4,10 @@ const prisma = new PrismaClient();
 
 async function browse(req, res) {
   try {
-    const users = await prisma.user.findMany({
-      include: {
-        card: true,
-      },
-    });
+    const users = await prisma.user.findMany({});
 
     users.forEach((user) => {
-      delete user.card.pin;
+      delete user.solde;
     });
     res.status(200).json({ users });
   } catch (err) {
@@ -59,34 +55,110 @@ async function getUserAndPassToNext(req, res, next) {
 async function getUserOperations(req, res) {
   const { account } = req.params;
   try {
-    /* const operations = await prisma.bankOperation.findMany({
+    const user = await prisma.user.findUnique({
+      where: {
+        accountNumber: account,
+      },
+    });
+    const operations = await prisma.bankOperation.findMany({
       where: {
         OR: [{ userFrom: account }, { userTo: account }],
       },
-    }); */
-    const user = await prisma.user.findUnique({
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    user.operations = operations;
+    res.status(200).json({ user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function editSolde(req, res, next) {
+  const { amount, type, userTo } = req.body;
+  const { account } = req.params;
+  console.log(type);
+  try {
+    const userMakeOperation = await prisma.user.findUnique({
+      where: {
+        accountNumber: account,
+      },
+    });
+    let newSolde = 0;
+    if (type !== "virement") {
+      if (type === "depot") {
+        newSolde = parseFloat(userMakeOperation.solde) + parseFloat(amount);
+      } else {
+        newSolde = parseFloat(userMakeOperation.solde) - parseFloat(amount);
+      }
+
+      if (newSolde < 0) {
+        res.sendStatus(401);
+      } else {
+        await prisma.user.update({
+          where: {
+            accountNumber: account,
+          },
+          data: {
+            solde: newSolde,
+          },
+        });
+        next();
+      }
+    } else {
+      const userRecieveAmount = await prisma.user.findUnique({
+        where: {
+          accountNumber: userTo,
+        },
+      });
+      if (parseFloat(userMakeOperation.solde) - parseFloat(amount) < 0) {
+        res.sendStatus(401);
+      } else {
+        await prisma.user.update({
+          where: {
+            accountNumber: account,
+          },
+          data: {
+            solde: parseFloat(userMakeOperation.solde) - parseFloat(amount),
+          },
+        });
+        await prisma.user.update({
+          where: {
+            accountNumber: userTo,
+          },
+          data: {
+            solde: parseFloat(userRecieveAmount.solde) + parseFloat(amount),
+          },
+        });
+        next();
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function destroy(req, res) {
+  const { account } = req.params;
+  try {
+    const user = await prisma.user.delete({
       where: {
         accountNumber: account,
       },
       include: {
         card: true,
-        bankOperationsFrom: true,
-        bankOperationsTo: {
-          where: {
-            NOT: [{ userFrom: account }],
-          },
-        },
       },
     });
 
-    user.operations = [
-      ...user.bankOperationsFrom,
-      ...user.bankOperationsTo,
-    ].sort((a, b) => a.id - b.id);
-    delete user.bankOperationsFrom;
-    delete user.bankOperationsTo;
-
-    res.status(200).json({ user });
+    if (user) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(404);
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
@@ -98,4 +170,6 @@ module.exports = {
   read,
   getUserOperations,
   getUserAndPassToNext,
+  editSolde,
+  destroy,
 };

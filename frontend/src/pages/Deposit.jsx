@@ -20,6 +20,7 @@ export default function Deposit() {
         <InputSection
           logo={bank}
           title="Dépôt"
+          type="depot"
           paragraph="Entrez le montant que vous souhaitez déposer"
           inputValue={amount}
           setActiveInput={setActiveInput}

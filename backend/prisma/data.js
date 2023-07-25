@@ -23,35 +23,30 @@ const cards = [
 
 const bankOperations = [
   {
-    id: 1,
     type: "depot",
     userFrom: "12345678901",
     userTo: "12345678901",
     amount: 500,
   },
   {
-    id: 2,
     type: "retrait",
     userFrom: "12345678901",
     userTo: "12345678901",
     amount: 250,
   },
   {
-    id: 3,
     type: "virement",
     userFrom: "12345678901",
     userTo: "98765432109",
     amount: 300,
   },
   {
-    id: 4,
     type: "virement",
     userFrom: "98765432109",
     userTo: "12345678901",
     amount: 50,
   },
   {
-    id: 5,
     type: "depot",
     userFrom: "98765432109",
     userTo: "98765432109",

@@ -11,30 +11,26 @@ datasource db {
 }
 
 model User {
-  accountNumber      String          @id @unique
-  firstname          String
-  lastname           String
-  solde              Decimal         @default(0)
-  card               Card?
-  bankOperationsFrom BankOperation[] @relation("UserFromRealation")
-  bankOperationsTo   BankOperation[] @relation("UserToRealation")
+  accountNumber String  @id @unique
+  firstname     String
+  lastname      String
+  solde         Decimal @default(0)
+  card          Card?
 }
 
 model BankOperation {
-  id           Int      @id @unique @default(autoincrement())
-  type         String
-  userFrom     String   @db.VarChar(11)
-  userTo       String   @db.VarChar(11)
-  date         DateTime @default(now())
-  amount       Decimal
-  userFromUser User     @relation("UserFromRealation", fields: [userFrom], references: [accountNumber])
-  userToUser   User     @relation("UserToRealation", fields: [userTo], references: [accountNumber])
+  id       Int      @id @unique @default(autoincrement())
+  type     String
+  userFrom String   @db.VarChar(11)
+  userTo   String   @db.VarChar(11)
+  date     DateTime @default(now())
+  amount   Decimal
 }
 
 model Card {
   cardNumber        String @id @unique
   hashedPin         String @default("$argon2id$v=19$m=16,t=2,p=1$YXJnb24yaWQ$esuJQi7RKxkyQihKKRdbAw")
   attempt           Int    @default(4)
-  user              User   @relation(fields: [userAccountNumber], references: [accountNumber])
+  user              User   @relation(fields: [userAccountNumber], references: [accountNumber], onDelete: Cascade)
   userAccountNumber String @unique
 }
