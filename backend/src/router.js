@@ -35,4 +35,6 @@ router.put(
   cardControllers.editPin
 );
 
+router.delete("/users/:account", userControllers.destroy);
+
 module.exports = router;
