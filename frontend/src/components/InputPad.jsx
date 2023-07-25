@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-export default function InputPad({ id, content, img, value, onFocus, error }) {
+export default function InputPad({ id, content, img, value, onFocus }) {
   return (
     <div className="flex flex-col items-center justify-center gap-8">
       <p className="text-center text-lg">{content}</p>
@@ -17,7 +17,6 @@ export default function InputPad({ id, content, img, value, onFocus, error }) {
           readOnly
         />
       </div>
-      {error && <p className="font-bold text-red-600">{error}</p>}
     </div>
   );
 }
@@ -28,5 +27,4 @@ InputPad.propTypes = {
   img: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onFocus: PropTypes.func.isRequired,
-  error: PropTypes.string,
 };
