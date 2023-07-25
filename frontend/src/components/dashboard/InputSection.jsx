@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import InputAmount from "./InputAmount";
 import InputAccount from "./InputAccount";
 import axios from "axios";
-import { useAuthUser } from "react-auth-kit";
+import { useAuthUser, useAuthHeader } from "react-auth-kit";
 import { toast } from "react-toastify";
 
 export default function InputSection({
@@ -16,6 +16,7 @@ export default function InputSection({
   transfer,
 }) {
   const auth = useAuthUser();
+  const authHeader = useAuthHeader();
 
   function verifyErrors() {
     if (transfer) {
@@ -49,10 +50,19 @@ export default function InputSection({
             userFrom: auth().user.accountNumber,
             userTo: accountNumbers ? accountNumbers : auth().user.accountNumber,
             amount: inputValue,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${authHeader().slice(7)}`,
+            },
           }
         )
         .then((res) => res.status === 201 && toast.success(`${title} confirmé`))
         .catch((err) => {
+          if (err.response.status === 401 && err.response.data.message) {
+            toast.error(err.response.data.message);
+            return;
+          }
           err.response.status === 401 &&
             toast.error("Opération impossible, solde insuffisant !");
           err.response.status === 404 &&
