@@ -3,8 +3,7 @@ import InputPad from "../InputPad";
 import pass from "../../assets/password.svg";
 import card from "../../assets/credit-card.svg";
 import axios from "axios";
-import { useAuthUser } from "react-auth-kit";
-import { useState } from "react";
+import { useAuthUser, useAuthHeader } from "react-auth-kit";
 import { toast } from "react-toastify";
 
 export default function ChangePinSection({
@@ -14,7 +13,13 @@ export default function ChangePinSection({
   onFocus,
 }) {
   const auth = useAuthUser();
-  const [error, setError] = useState("");
+  const authHeader = useAuthHeader();
+  const authorization = {
+    headers: {
+      Authorization: `Bearer ${authHeader().slice(7)}`,
+    },
+  };
+
   function verifyErrors() {
     if (!oldPin) {
       toast.warn("Vous devez renseigner votre ancien PIN !");
@@ -44,7 +49,8 @@ export default function ChangePinSection({
           {
             pin: oldPin,
             newPin,
-          }
+          },
+          authorization
         )
         .then(
           (res) =>
@@ -82,7 +88,6 @@ export default function ChangePinSection({
           img={pass}
           value={newPinChecked}
           onFocus={onFocus}
-          error={error}
         />
         <input
           className="w-max self-center rounded-xl bg-gradient-to-br from-[#d5d9dc] to-[#feffff] px-8 py-2 font-bold uppercase shadow-btn active:shadow-onPress"

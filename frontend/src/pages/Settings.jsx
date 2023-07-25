@@ -1,19 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import settings from "../assets/gear.svg";
 import axios from "axios";
-import { useAuthUser } from "react-auth-kit";
+import { useAuthUser, useAuthHeader } from "react-auth-kit";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Settings() {
   const navigate = useNavigate();
   const auth = useAuthUser();
+  const authHeader = useAuthHeader();
+  const authorization = {
+    headers: {
+      Authorization: `Bearer ${authHeader().slice(7)}`,
+    },
+  };
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   function closeAccount() {
     axios
       .delete(
-        `${import.meta.env.VITE_BACKEND_URL}/users/${auth().user.accountNumber}`
+        `${import.meta.env.VITE_BACKEND_URL}/users/${
+          auth().user.accountNumber
+        }`,
+        authorization
       )
       .then((res) => {
         if (res.status === 200) {

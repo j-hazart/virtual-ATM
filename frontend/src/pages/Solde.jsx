@@ -8,6 +8,11 @@ export default function Solde() {
   const navigate = useNavigate();
   const auth = useAuthUser();
   const authHeader = useAuthHeader();
+  const authorization = {
+    headers: {
+      Authorization: `Bearer ${authHeader().slice(7)}`,
+    },
+  };
 
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -18,11 +23,7 @@ export default function Solde() {
         `${import.meta.env.VITE_BACKEND_URL}/users/${
           auth().user.accountNumber
         }/operations`,
-        {
-          headers: {
-            Authorization: `Bearer ${authHeader().slice(7)}`,
-          },
-        }
+        authorization
       )
       .then((res) => {
         setUser(res.data.user);

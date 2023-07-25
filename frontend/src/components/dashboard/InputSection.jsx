@@ -17,6 +17,11 @@ export default function InputSection({
 }) {
   const auth = useAuthUser();
   const authHeader = useAuthHeader();
+  const authorization = {
+    headers: {
+      Authorization: `Bearer ${authHeader().slice(7)}`,
+    },
+  };
 
   function verifyErrors() {
     if (transfer) {
@@ -51,11 +56,7 @@ export default function InputSection({
             userTo: accountNumbers ? accountNumbers : auth().user.accountNumber,
             amount: inputValue,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${authHeader().slice(7)}`,
-            },
-          }
+          authorization
         )
         .then((res) => res.status === 201 && toast.success(`${title} confirmé`))
         .catch((err) => {
