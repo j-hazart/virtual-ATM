@@ -20,6 +20,7 @@ export default function Solde() {
       )
       .then((res) => {
         setUser(res.data.user);
+        console.log(res.data.user);
         setIsLoading(false);
       });
   }

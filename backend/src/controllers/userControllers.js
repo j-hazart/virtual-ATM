@@ -62,21 +62,13 @@ async function getUserOperations(req, res) {
     });
     const operations = await prisma.bankOperation.findMany({
       where: {
-        userFrom: account,
-        userTo: account,
+        OR: [{ userFrom: account }, { userTo: account }],
+      },
+      orderBy: {
+        date: "desc",
       },
     });
 
-    operations.sort((a, b) => {
-      if (a.date < b.date) {
-        return 1;
-      }
-      if (a.date > b.date) {
-        return -1;
-      }
-      // a must be equal to b
-      return 0;
-    });
     user.operations = operations;
     res.status(200).json({ user });
   } catch (err) {
@@ -84,46 +76,6 @@ async function getUserOperations(req, res) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
-/* async function getUserOperations(req, res) {
-  const { account } = req.params;
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        accountNumber: account,
-      },
-      include: {
-        bankOperationsFrom: true,
-        bankOperationsTo: {
-          where: {
-            NOT: [{ userFrom: account }],
-          },
-        },
-      },
-    });
-
-    user.operations = [
-      ...user.bankOperationsFrom,
-      ...user.bankOperationsTo,
-    ].sort((a, b) => {
-      if (a.date < b.date) {
-        return 1;
-      }
-      if (a.date > b.date) {
-        return -1;
-      }
-      // a must be equal to b
-      return 0;
-    });
-
-    delete user.bankOperationsFrom;
-    delete user.bankOperationsTo;
-
-    res.status(200).json({ user });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-} */
 
 async function editSolde(req, res, next) {
   const { amount, type, userTo } = req.body;
