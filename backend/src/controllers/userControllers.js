@@ -96,6 +96,7 @@ async function editSolde(req, res, next) {
       }
 
       if (newSolde < 0) {
+        console.log(401);
         res.sendStatus(401);
       } else {
         await prisma.user.update({
@@ -114,7 +115,9 @@ async function editSolde(req, res, next) {
           accountNumber: userTo,
         },
       });
-      if (parseFloat(userMakeOperation.solde) - parseFloat(amount) < 0) {
+      if (!userRecieveAmount) {
+        res.sendStatus(404);
+      } else if (parseFloat(userMakeOperation.solde) - parseFloat(amount) < 0) {
         res.sendStatus(401);
       } else {
         await prisma.user.update({

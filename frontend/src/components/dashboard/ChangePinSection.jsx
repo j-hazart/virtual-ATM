@@ -5,6 +5,7 @@ import card from "../../assets/credit-card.svg";
 import axios from "axios";
 import { useAuthUser } from "react-auth-kit";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function ChangePinSection({
   oldPin,
@@ -16,19 +17,19 @@ export default function ChangePinSection({
   const [error, setError] = useState("");
   function verifyErrors() {
     if (!oldPin) {
-      setError("Vous devez renseigner votre ancien PIN !");
+      toast.warn("Vous devez renseigner votre ancien PIN !");
       return false;
     }
     if (!newPin) {
-      setError("Vous devez choisir un nouveau PIN !");
+      toast.warn("Vous devez choisir un nouveau PIN !");
       return false;
     }
     if (!newPinChecked) {
-      setError("Vous devez confirmer le nouveau PIN !");
+      toast.warn("Vous devez confirmer le nouveau PIN !");
       return false;
     }
     if (newPin !== newPinChecked) {
-      setError("Les nouveaux PIN ne correspondent pas !");
+      toast.warn("Les nouveaux PIN ne correspondent pas !");
       return false;
     }
     return true;
@@ -45,8 +46,12 @@ export default function ChangePinSection({
             newPin,
           }
         )
+        .then(
+          (res) =>
+            res.status === 200 && toast.success("Changement de PIN confirmé !")
+        )
         .catch((err) => {
-          setError(err.response.data.message);
+          toast.error(err.response.data.message);
         });
   }
   return (

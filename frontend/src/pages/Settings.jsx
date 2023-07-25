@@ -3,6 +3,7 @@ import settings from "../assets/gear.svg";
 import axios from "axios";
 import { useAuthUser } from "react-auth-kit";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -14,7 +15,12 @@ export default function Settings() {
       .delete(
         `${import.meta.env.VITE_BACKEND_URL}/users/${auth().user.accountNumber}`
       )
-      .then((res) => res.status === 200 && navigate("/"));
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success("Votre compte a bien été clôturé");
+          navigate("/");
+        }
+      });
   }
 
   return (

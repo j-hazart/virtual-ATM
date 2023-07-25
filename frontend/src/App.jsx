@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { AuthProvider } from "react-auth-kit";
 import Home from "./pages/Home";
+import "react-toastify/dist/ReactToastify.css";
 import "/index.css";
 import Dashboard from "./pages/Dashboard";
 import Withdraw from "./pages/Withdraw";
@@ -9,6 +10,7 @@ import Transfer from "./pages/Transfer";
 import Deposit from "./pages/Deposit";
 import Pin from "./pages/Pin";
 import Settings from "./pages/Settings";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
           <Route path="/dashboard/settings" element={<Settings />} />
         </Routes>
       </AuthProvider>
+      <ToastContainer />
     </main>
   );
 }
