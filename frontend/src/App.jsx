@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { AuthProvider } from "react-auth-kit";
+import { RequireAuth } from "react-auth-kit";
 import Home from "./pages/Home";
 import "react-toastify/dist/ReactToastify.css";
 import "/index.css";
@@ -23,13 +24,62 @@ function App() {
       >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/withdraw" element={<Withdraw />} />
-          <Route path="/dashboard/solde" element={<Solde />} />
-          <Route path="/dashboard/transfer" element={<Transfer />} />
-          <Route path="/dashboard/deposit" element={<Deposit />} />
-          <Route path="/dashboard/pin" element={<Pin />} />
-          <Route path="/dashboard/settings" element={<Settings />} />
+          <Route
+            path={"/dashboard"}
+            element={
+              <RequireAuth loginPath={"/"}>
+                <Dashboard />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/dashboard/withdraw"}
+            element={
+              <RequireAuth loginPath={"/"}>
+                <Withdraw />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/dashboard/solde"}
+            element={
+              <RequireAuth loginPath={"/"}>
+                <Solde />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/dashboard/transfer"}
+            element={
+              <RequireAuth loginPath={"/"}>
+                <Transfer />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/dashboard/deposit"}
+            element={
+              <RequireAuth loginPath={"/"}>
+                <Deposit />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/dashboard/pin"}
+            element={
+              <RequireAuth loginPath={"/"}>
+                <Pin />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={"/dashboard/settings"}
+            element={
+              <RequireAuth loginPath={"/"}>
+                <Settings />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </AuthProvider>
       <ToastContainer />

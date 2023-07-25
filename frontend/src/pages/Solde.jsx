@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAuthUser } from "react-auth-kit";
+import { useAuthUser, useAuthHeader } from "react-auth-kit";
 import axios from "axios";
 import History from "../components/solde/History";
 import { useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 export default function Solde() {
   const navigate = useNavigate();
   const auth = useAuthUser();
+  const authHeader = useAuthHeader();
 
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +17,12 @@ export default function Solde() {
       .get(
         `${import.meta.env.VITE_BACKEND_URL}/users/${
           auth().user.accountNumber
-        }/operations`
+        }/operations`,
+        {
+          headers: {
+            Authorization: `Bearer ${authHeader().slice(7)}`,
+          },
+        }
       )
       .then((res) => {
         setUser(res.data.user);

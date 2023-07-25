@@ -42,7 +42,7 @@ async function verifyPin(req, res) {
       });
 
       if (match) {
-        const expiresIn = 60;
+        const expiresIn = 3600;
         const payload = {
           account: user.accountNumber,
         };
@@ -103,8 +103,34 @@ async function verifyPinToEdit(req, res, next) {
   }
 }
 
+const verifyToken = (req, res, next) => {
+  try {
+    const authorizationHeader = req.get("Authorization");
+
+    if (authorizationHeader == null) {
+      throw new Error("Authorization header is missing");
+    }
+
+    const [type, token] = authorizationHeader.split(" ");
+
+    if (type !== "Bearer") {
+      throw new Error("Authorization header has not the 'Bearer' type");
+    }
+
+    req.payload = jwt.verify(token, process.env.JWT_SECRET);
+
+    next();
+  } catch (err) {
+    console.error(err);
+    res
+      .status(401)
+      .send({ message: "Refusé ! Le token n'est pas valide ou a expiré !" });
+  }
+};
+
 module.exports = {
   hashPin,
   verifyPin,
   verifyPinToEdit,
+  verifyToken,
 };

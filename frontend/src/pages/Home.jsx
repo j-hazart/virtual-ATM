@@ -7,7 +7,7 @@ export default function Home() {
         <h1 className="text-6xl font-bold">Bienvenue</h1>
         <p className="w-1/2 text-center text-3xl text-tertiary">
           Pour commencer à utiliser la borne, entrez le numero de votre carte
-          virtuel et cliquez dessus pour l'inserer.
+          virtuel et cliquez dessus pour l'utiliser.
         </p>
       </section>
       <CardInteraction />
