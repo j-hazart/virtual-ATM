@@ -26,12 +26,16 @@ export default function History({ history, account }) {
       (user) => user.accountNumber === operation.userTo
     );
 
-    const fromAccountName = `${fromAccount.firstname} ${fromAccount.lastname}`;
-    const toAccountName = `${toAccount.firstname} ${toAccount.lastname}`;
+    const fromAccountName = `${
+      fromAccount ? fromAccount.firstname : "compte"
+    } ${fromAccount ? fromAccount.lastname : `n°${operation.userFrom}`}`;
+    const toAccountName = `${toAccount ? toAccount.firstname : "compte"} ${
+      toAccount ? toAccount.lastname : `n°${operation.userFrom}`
+    }`;
 
     return operation.userFrom === account
-      ? `vers ${toAccountName}`
-      : `de ${fromAccountName}`;
+      ? ` emit ${toAccount ? "vers" : "vers le"} ${toAccountName}`
+      : `reçu ${fromAccount ? "de" : "du"} ${fromAccountName}`;
   }
   return (
     <>
