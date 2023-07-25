@@ -42,7 +42,7 @@ async function verifyPin(req, res) {
       });
 
       if (match) {
-        const expiresIn = 60;
+        const expiresIn = 3600;
         const payload = {
           account: user.accountNumber,
         };

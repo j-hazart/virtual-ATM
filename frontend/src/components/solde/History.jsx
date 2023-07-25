@@ -1,16 +1,25 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { useAuthHeader } from "react-auth-kit";
+
 import axios from "axios";
 
 export default function History({ history, account }) {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const authHeader = useAuthHeader();
 
   function getUsers() {
-    axios.get(`${import.meta.env.VITE_BACKEND_URL}/users`).then((res) => {
-      setUsers(res.data.users);
-      setIsLoading(false);
-    });
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/users`, {
+        headers: {
+          Authorization: `Bearer ${authHeader().slice(7)}`,
+        },
+      })
+      .then((res) => {
+        setUsers(res.data.users);
+        setIsLoading(false);
+      });
   }
 
   useEffect(() => {
