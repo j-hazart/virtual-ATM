@@ -10,11 +10,18 @@ import gear from "../assets/gear.svg";
 import Card from "../components/dashboard/Card";
 import { useNavigate } from "react-router-dom";
 import { useAuthUser } from "react-auth-kit";
+import { useSignOut } from "react-auth-kit";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const auth = useAuthUser();
   const { firstname, lastname } = auth().user;
+  const signOut = useSignOut();
+
+  function handleSignOut() {
+    signOut();
+    navigate("/");
+  }
   return (
     <section className="flex h-screen w-screen flex-col bg-primary text-secondary">
       <header className="mt-8 flex justify-between p-4">
@@ -23,7 +30,7 @@ export default function Dashboard() {
         </h1>
         <div
           className="flex items-center gap-2 rounded-full border-[1px] border-tertiary px-4 active:border-none active:shadow-neo_inset"
-          onClick={() => navigate("/")}
+          onClick={() => handleSignOut()}
         >
           <img src={logout} alt="exit logo" />
           <p className="max-sm:hidden">deconnexion</p>
