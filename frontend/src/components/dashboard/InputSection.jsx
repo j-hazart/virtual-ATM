@@ -3,6 +3,7 @@ import InputAmount from "./InputAmount";
 import InputAccount from "./InputAccount";
 import axios from "axios";
 import { useAuthUser } from "react-auth-kit";
+import { toast } from "react-toastify";
 
 export default function InputSection({
   logo,
@@ -15,20 +16,48 @@ export default function InputSection({
   transfer,
 }) {
   const auth = useAuthUser();
+
+  function verifyErrors() {
+    if (transfer) {
+      if (!accountNumbers) {
+        toast.warn("Vous devez choisir un destinataire !");
+        return false;
+      }
+      if (accountNumbers === auth().user.accountNumber) {
+        toast.error("Vous pouvez pas vous faire un virement !");
+        return false;
+      }
+      toast.warn("Vous devez choisir un destinataire !");
+      return false;
+    }
+    if (!inputValue) {
+      toast.warn("Vous devez choisir un montant !");
+      return false;
+    }
+    return true;
+  }
+
   function Deposit() {
-    axios
-      .put(
-        `${import.meta.env.VITE_BACKEND_URL}/users/${
-          auth().user.accountNumber
-        }/solde`,
-        {
-          type,
-          userFrom: auth().user.accountNumber,
-          userTo: accountNumbers ? accountNumbers : auth().user.accountNumber,
-          amount: inputValue,
-        }
-      )
-      .then((res) => console.log(res));
+    verifyErrors() &&
+      axios
+        .put(
+          `${import.meta.env.VITE_BACKEND_URL}/users/${
+            auth().user.accountNumber
+          }/solde`,
+          {
+            type,
+            userFrom: auth().user.accountNumber,
+            userTo: accountNumbers ? accountNumbers : auth().user.accountNumber,
+            amount: inputValue,
+          }
+        )
+        .then((res) => res.status === 201 && toast.success(`${title} confirmé`))
+        .catch((err) => {
+          err.response.status === 401 &&
+            toast.error("Opération impossible, solde insuffisant !");
+          err.response.status === 404 &&
+            toast.error("Opération impossible, le destinataire n'existe pas !");
+        });
   }
   return (
     <div className="flex h-max w-max flex-1 flex-col gap-16 rounded-xl p-8">

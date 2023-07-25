@@ -29,8 +29,9 @@ export default function History({ history, account }) {
     const fromAccountName = `${
       fromAccount ? fromAccount.firstname : "compte"
     } ${fromAccount ? fromAccount.lastname : `n°${operation.userFrom}`}`;
+
     const toAccountName = `${toAccount ? toAccount.firstname : "compte"} ${
-      toAccount ? toAccount.lastname : `n°${operation.userFrom}`
+      toAccount ? toAccount.lastname : `n°${operation.userTo}`
     }`;
 
     return operation.userFrom === account
